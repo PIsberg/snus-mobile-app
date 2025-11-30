@@ -1,0 +1,122 @@
+import React from 'react';
+import { Download, Trash2, Save } from 'lucide-react';
+import { Log, UserSettings } from '../types';
+import { StorageService } from '../services/storageService';
+
+interface SettingsViewProps {
+  settings: UserSettings;
+  logs: Log[];
+  onUpdateSettings: (s: UserSettings) => void;
+  onClearData: () => void;
+}
+
+export const SettingsView: React.FC<SettingsViewProps> = ({ settings, logs, onUpdateSettings, onClearData }) => {
+  
+  const handleExport = () => {
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "Date,Timestamp,Count,Nicotine(mg)\n"
+      + logs.map(l => `${new Date(l.timestamp).toLocaleString()},${l.timestamp},${l.count},${l.nicotineAmount}`).join("\n");
+      
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "snus_data_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleChange = (key: keyof UserSettings, value: any) => {
+    const newSettings = { ...settings, [key]: value };
+    onUpdateSettings(newSettings);
+    StorageService.saveSettings(newSettings);
+  };
+
+  return (
+    <div className="p-6 pt-8 space-y-8">
+      <h2 className="text-2xl font-bold text-white mb-6">Settings</h2>
+
+      {/* Goal Section */}
+      <section className="space-y-4">
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Goals & Limits</h3>
+        <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
+            <label className="block text-sm font-medium text-slate-300 mb-2">Daily Pouch Limit</label>
+            <input 
+                type="number" 
+                value={settings.dailyGoal}
+                onChange={(e) => handleChange('dailyGoal', parseInt(e.target.value) || 0)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+            />
+            <p className="text-xs text-slate-500 mt-2">Used to calculate your daily progress circle.</p>
+        </div>
+      </section>
+
+      {/* Product Config */}
+      <section className="space-y-4">
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Product Configuration</h3>
+        <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 space-y-4">
+            <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Nicotine per Pouch (mg)</label>
+                <input 
+                    type="number" 
+                    step="0.1"
+                    value={settings.nicotinePerPouch}
+                    onChange={(e) => handleChange('nicotinePerPouch', parseFloat(e.target.value) || 0)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                />
+            </div>
+             <div className="flex space-x-4">
+                 <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Cost per Pouch</label>
+                    <input 
+                        type="number" 
+                        step="0.01"
+                        value={settings.costPerUnit}
+                        onChange={(e) => handleChange('costPerUnit', parseFloat(e.target.value) || 0)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                    />
+                 </div>
+                 <div className="w-24">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Currency</label>
+                    <input 
+                        type="text" 
+                        value={settings.currencySymbol}
+                        onChange={(e) => handleChange('currencySymbol', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-center"
+                    />
+                 </div>
+             </div>
+        </div>
+      </section>
+
+      {/* Data Management */}
+      <section className="space-y-4">
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Data Management</h3>
+        
+        <button 
+            onClick={handleExport}
+            className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 rounded-2xl border border-slate-700 transition-colors group"
+        >
+            <span className="text-slate-200 font-medium">Export Data (CSV)</span>
+            <Download size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
+        </button>
+
+        <button 
+            onClick={() => {
+                if(window.confirm("Are you sure? This cannot be undone.")) {
+                    onClearData();
+                }
+            }}
+            className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-rose-900/20 rounded-2xl border border-slate-700 hover:border-rose-800 transition-colors group"
+        >
+            <span className="text-rose-400 font-medium">Reset All Data</span>
+            <Trash2 size={20} className="text-rose-500 group-hover:scale-110 transition-transform" />
+        </button>
+      </section>
+      
+      <div className="text-center pt-8 pb-4">
+          <p className="text-xs text-slate-600">SnusTrack AI v1.3.0</p>
+      </div>
+    </div>
+  );
+};
