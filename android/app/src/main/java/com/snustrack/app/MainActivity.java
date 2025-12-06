@@ -1,4 +1,4 @@
-package com.snustrack.ai;
+package com.snustrack.app;
 
 import com.getcapacitor.BridgeActivity;
 

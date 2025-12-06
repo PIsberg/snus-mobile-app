@@ -20,28 +20,57 @@ View your app in AI Studio: https://ai.studio/apps/temp/1
    `npm run dev`
 
 
-Changes Made
-Built Web Assets: Ran npm run build to generate the production-ready web assets in the dist folder.
-Initialized Android Platform: Ran npx cap add android to create the native Android project structure.
-Synced Capacitor: Ran npx cap sync to copy the web assets and configuration to the Android project.
-Verification Results
-Build Verification
-Web Build: Successful. dist folder created.
-Android Platform: Successful. android directory created.
-Sync: Successful. Web assets copied to android/app/src/main/assets/public.
+## Build for Android
 
-Next Steps
-To finish the deployment process, you need to use Android Studio:
+1. **Build and Sync**:
+   Run the following command to build the web assets and sync them to the Android project:
+   ```bash
+   npm run cap:sync
+   ```
+   *Note: This command runs `npm run build` followed by `npx cap sync`.*
 
-Open the Project: Run npx cap open android in your terminal. This will open the project in Android Studio.
-Generate Signed Bundle:
-In Android Studio, go to Build > Generate Signed Bundle / APK.
-Select Android App Bundle.
-Create a new key store (or use an existing one) and follow the prompts.
-Select the release build variant.
-Upload to Play Console:
-Locate the generated .aab file (usually in android/app/release).
-Upload this file to your Google Play Console account.
-TIP
+2. **Open Android Studio**:
+   Open the native Android project in Android Studio:
+   ```bash
+   npx cap open android
+   ```
 
-Make sure to update your capacitor.config.ts with the correct appId if you haven't already, as this will be your package name on Google Play.
+3. **Generate Signed Bundle**:
+   - In Android Studio, go to **Build > Generate Signed Bundle / APK**.
+   - Select **Android App Bundle**.
+   - Create a new key store (or choose an existing one).
+   - Select the **release** build variant.
+   - Click **Finish** to generate the `.aab` file for the Play Store.
+
+## Recurring Updates
+
+When you make changes to your web code (React/TypeScript):
+
+1. **Rebuild and Sync**:
+   Always run this command to update the native Android project with your latest changes:
+   ```bash
+   npm run cap:sync
+   ```
+
+2. **Build in Android Studio**:
+   - If Android Studio is already open, just click the **Sync Project with Gradle Files** button (elephant icon) if needed.
+   - Then run **Build > Generate Signed Bundle / APK** again to create a new updated bundle.
+
+## Upload to Google Play Console
+
+1. **Create an App**:
+   - Go to the [Google Play Console](https://play.google.com/console).
+   - Click **Create app**.
+   - Enter your App Name ("SnusTrack AI"), select **App**, and select **Free** (or Paid).
+   - Accept the declarations and click **Create app**.
+
+2. **Set up your App**:
+   - Dashboard will guide you through steps like "Set up your store listing", "Content rating", etc. Complete these.
+
+3. **Create a Release**:
+   - In the left menu, go to **Release > Production** (or **Testing > Internal testing** for a beta).
+   - Click **Create new release**.
+   - Click **Choose signing key** and use "Google Play App Signing" (recommended).
+   - Under **App bundles**, drag and drop the `.aab` file you generated (usually found in `android/app/release/app-release.aab` on your computer).
+   - Enter a release name (e.g., "1.0.0") and release notes.
+   - Click **Next**, review any warnings, and then **Save** and **Start rollout**.
