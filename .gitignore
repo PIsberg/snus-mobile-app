@@ -21,3 +21,33 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/*.iml
+
+# JetBrains / Android Studio
+.idea/
+*.iws
+*.ipr
+out/
+
+# VS Code
+*.code-workspace
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
