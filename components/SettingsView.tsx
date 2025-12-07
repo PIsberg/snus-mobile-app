@@ -209,7 +209,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, logs, user
       </section>
 
       <div className="text-center pt-8 pb-4">
-        <p className="text-xs text-slate-600">SnusTrack AI v1.3.0</p>
+        <p className="text-xs text-slate-600">Snustrack app v1.3.0</p>
       </div>
     </div>
   );

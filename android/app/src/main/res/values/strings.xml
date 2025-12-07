@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SnusTrack AI</string>
-    <string name="title_activity_main">SnusTrack AI</string>
+    <string name="app_name">Snustrack App</string>
+    <string name="title_activity_main">Snustrack App</string>
     <string name="package_name">com.snustrack.app</string>
     <string name="custom_url_scheme">com.snustrack.app</string>
 </resources>

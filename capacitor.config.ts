@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.snustrack.app',
-  appName: 'SnusTrack AI',
+  appName: 'Snustrack App',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
