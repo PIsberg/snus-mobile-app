@@ -130,4 +130,9 @@ You can leave "Authorized JavaScript origins" and "Authorized redirect URIs" emp
 Click "CREATE".
 Make a note of the Client ID and Client Secret generated.
 
-Run android app npx cap run android
+Run android app in emulator npx cap run android
+npx cap open android in android studio
+
+get logs adb logcat -s Capacitor
+
+$env:Path = "C:\Users\isber\AppData\Local\Android\Sdk\platform-tools;" + $env:Path

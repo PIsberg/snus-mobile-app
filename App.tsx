@@ -5,6 +5,7 @@ import { StatsView } from './components/StatsView';
 import { SettingsView } from './components/SettingsView';
 import { StorageService } from './services/storageService';
 import { AuthService, UserInfo } from './services/authService';
+import { initializeAdMob, showBanner } from '@/src/utils/admob';
 import { Log, UserSettings, ViewState } from './types';
 
 const App: React.FC = () => {
@@ -18,6 +19,15 @@ const App: React.FC = () => {
   // Initialize data and auth
   useEffect(() => {
     const init = async () => {
+      await initializeAdMob();
+      try {
+        // Import showBanner if not already imported, but for now assuming it's exported from the same file
+        // We need to update the import statement first, but let's assume we will.
+        await showBanner();
+      } catch (e) {
+        console.error("Error showing banner", e);
+      }
+
       const loadedLogs = StorageService.getLogs();
       setLogs(loadedLogs);
 

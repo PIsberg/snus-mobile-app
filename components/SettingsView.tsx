@@ -1,8 +1,52 @@
-import React from 'react';
-import { Download, Trash2, Save, Cloud, LogOut } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, Trash2, Save, Cloud, LogOut, Play, Square, AlertTriangle } from 'lucide-react';
 import { Log, UserSettings } from '../types';
 import { StorageService } from '../services/storageService';
 import { UserInfo } from '../services/authService';
+import { showBanner, hideBanner, getAdMobStatus, initializeAdMob } from '@/src/utils/admob';
+
+const DebugAdMob: React.FC = () => {
+  const [status, setStatus] = useState(getAdMobStatus());
+  const [msg, setMsg] = useState('');
+
+  const refreshStatus = () => setStatus(getAdMobStatus());
+
+  const runShow = async () => {
+    setMsg('Showing...');
+    try {
+      await showBanner();
+      setMsg('Show Success');
+    } catch (e: any) {
+      setMsg('Show Failed: ' + e.message);
+    }
+    refreshStatus();
+  };
+
+  const runHide = async () => {
+    setMsg('Hiding...');
+    await hideBanner();
+    setMsg('Hidden');
+    refreshStatus();
+  };
+
+  return (
+    <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 space-y-4">
+      <div className="flex gap-2">
+        <button onClick={runShow} className="flex-1 bg-emerald-600/20 text-emerald-400 p-2 rounded-lg flex items-center justify-center gap-2">
+          <Play size={16} /> Show
+        </button>
+        <button onClick={runHide} className="flex-1 bg-slate-700 text-slate-300 p-2 rounded-lg flex items-center justify-center gap-2">
+          <Square size={16} /> Hide
+        </button>
+      </div>
+      <div className="text-xs font-mono bg-black/30 p-2 rounded text-slate-400 break-all">
+        <div>Status: {status.isInitialized ? 'Initialized' : 'Not Initialized'}</div>
+        <div>Last Error: {status.lastError || 'None'}</div>
+        <div>Msg: {msg}</div>
+      </div>
+    </div>
+  );
+};
 
 interface SettingsViewProps {
   settings: UserSettings;
@@ -131,6 +175,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, logs, user
             Sign in to save your logs and settings to your Google Drive. This allows you to restore your data on other devices.
           </p>
         </div>
+      </section>
+
+      {/* Debug AdMob */}
+      <section className="space-y-4">
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Debug AdMob</h3>
+        <DebugAdMob />
       </section>
 
       {/* Data Management */}
