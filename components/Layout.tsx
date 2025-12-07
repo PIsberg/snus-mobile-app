@@ -17,7 +17,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, onChangeV
   }, []);
 
   return (
-    <div className={`flex flex-col h-screen bg-slate-900 text-white overflow-hidden max-w-md mx-auto shadow-2xl border-x border-slate-800 ${isNative ? 'pb-[60px]' : ''}`}>
+    <div className={`flex flex-col h-screen bg-slate-900 text-white overflow-hidden max-w-md mx-auto shadow-2xl border-x border-slate-800 ${isNative ? 'pb-[80px]' : ''}`}>
       {/* Content Area */}
       <main className="flex-1 overflow-y-auto no-scrollbar relative">
         {children}

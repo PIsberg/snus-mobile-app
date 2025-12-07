@@ -19,13 +19,13 @@ const App: React.FC = () => {
   // Initialize data and auth
   useEffect(() => {
     const init = async () => {
-      await initializeAdMob();
       try {
-        // Import showBanner if not already imported, but for now assuming it's exported from the same file
-        // We need to update the import statement first, but let's assume we will.
+        await initializeAdMob();
+        // Ensure we only try to show banner if we are native, or if testing mode supports it.
+        // Also good practice to wait a tick or check initialization status.
         await showBanner();
       } catch (e) {
-        console.error("Error showing banner", e);
+        console.error("Error initializing/showing AdMob", e);
       }
 
       const loadedLogs = StorageService.getLogs();
