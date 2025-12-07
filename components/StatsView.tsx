@@ -9,13 +9,18 @@ interface StatsViewProps {
 }
 
 export const StatsView: React.FC<StatsViewProps> = ({ logs, settings }) => {
-  const [activeTab, setActiveTab] = useState<'week' | 'month'>('week');
+  const [activeTab, setActiveTab] = useState<'week' | 'month' | '3months' | '6months' | 'year'>('week');
 
   // Data Aggregation
   const chartData = useMemo(() => {
     const now = new Date();
     const data: { name: string; count: number }[] = [];
-    const days = activeTab === 'week' ? 7 : 30;
+
+    let days = 7;
+    if (activeTab === 'month') days = 30;
+    else if (activeTab === '3months') days = 90;
+    else if (activeTab === '6months') days = 180;
+    else if (activeTab === 'year') days = 365;
 
     for (let i = days - 1; i >= 0; i--) {
       const d = new Date();
@@ -59,19 +64,16 @@ export const StatsView: React.FC<StatsViewProps> = ({ logs, settings }) => {
 
       {/* Chart Section */}
       <div className="bg-slate-800/30 rounded-3xl p-5 border border-slate-700/50">
-        <div className="flex space-x-2 bg-slate-900/50 p-1 rounded-xl mb-6 w-fit">
-          <button
-            onClick={() => setActiveTab('week')}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'week' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
-          >
-            Week
-          </button>
-          <button
-            onClick={() => setActiveTab('month')}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'month' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
-          >
-            Month
-          </button>
+        <div className="flex flex-wrap gap-2 bg-slate-900/50 p-1 rounded-xl mb-6 w-fit">
+          {(['week', 'month', '3months', '6months', 'year'] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${activeTab === tab ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              {tab === 'week' ? 'Week' : tab === 'month' ? 'Month' : tab === '3months' ? '3 Months' : tab === '6months' ? '6 Months' : 'Year'}
+            </button>
+          ))}
         </div>
 
         <div className="h-64 w-full">
@@ -90,12 +92,25 @@ export const StatsView: React.FC<StatsViewProps> = ({ logs, settings }) => {
             ) : (
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} dy={10} interval={3} />
+                <XAxis
+                  dataKey="name"
+                  stroke="#64748b"
+                  tick={{ fontSize: 10 }}
+                  tickLine={false}
+                  axisLine={false}
+                  dy={10}
+                  interval={
+                    activeTab === 'month' ? 3 :
+                      activeTab === '3months' ? 6 :
+                        activeTab === '6months' ? 14 :
+                          activeTab === 'year' ? 30 : 0
+                  }
+                />
                 <YAxis stroke="#64748b" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc', borderRadius: '12px' }}
                 />
-                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: '#10b981' }} />
+                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#10b981' }} />
               </LineChart>
             )}
           </ResponsiveContainer>
